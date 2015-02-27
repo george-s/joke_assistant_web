@@ -10,11 +10,11 @@ print app
 app.debug = True
 app.secret_key = 'F12Zr47j\3yX R~X@H!jmM]Lwf/,?KT'
 
-def sumSessionCounter():
-  try:
-    session['counter'] += 1
-  except KeyError:
-    session['counter'] = 1
+# def sumSessionCounter():
+#   try:
+#     session['counter'] += 1
+#   except KeyError:
+#     session['counter'] = 1
 
 
 @app.route('/')
@@ -35,9 +35,9 @@ def shortlist():
 def joke(jokename):
 	return render_template('joke.html', jokename=jokename)
 
-@app.route('/form2')
+@app.route('/form')
 def form():
-  sumSessionCounter()
+  #sumSessionCounter()
   # if a name has been sent, store it on a session variable
   if request.args.get('yourname'):
     session['name'] = request.args.get('yourname')
