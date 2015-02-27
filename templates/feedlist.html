@@ -12,9 +12,17 @@
 
 
            
-      <dl>{% for key in index_article_list %}
-            <dt><a href="{{key[0]}}">{{key[1]}}<br></dt> 
-            <!-- <a href="http://www.bbc.com">bbc</a><br> -->
+      <dl>
+      <form action="" method=post>
+      {% set id = 1 %}
+      {% for key in index_article_list %}
+            <!-- <input type="checkbox" name="checkbox[]" value="{{key[0]}},{{key[1]}}"<dt><a href="{{key[0]}}">{{key[1]}}<br></dt>  -->
+            <input type="checkbox" name="checkboxes" value="{{key[0],key[1]}}"<dt><a href="{{key[0]}}">{{key[1]}}<br></dt> 
+            {% set id = id + 1 %}
       {% endfor %}
+        <input type="submit" value="Submit">
+
+      </form>
+
 </dl>
 <div>

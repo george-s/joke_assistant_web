@@ -20,11 +20,6 @@ app.secret_key = 'F12Zr47j\3yX R~X@H!jmM]Lwf/,?KT'
 #     session['counter'] = 1
 
 
-# @app.route('/')
-# def index():
-# 	name = "fred"
-# 	return render_template('index.html', name=name)
-
 bbc_feed = ArticleFeed('bbc', "bbc.png", 'http://feeds.bbci.co.uk/news/rss.xml?edition=uk')
 dailymail_feed = ArticleFeed('dailymail', "dailymail.jpeg", 'http://www.dailymail.co.uk/news/index.rss')
 fox_feed = ArticleFeed('fox', "fox.png", 'http://feeds.foxnews.com/foxnews/latest')
@@ -34,7 +29,7 @@ def sourceSelector():
  	name = "fred"
  	if request.args.get('articleSource'):
  		session['source'] = request.args.get('articleSource')
- 		return redirect(url_for('shortlist'))
+ 		return redirect(url_for('feedlist'))
  	else:
  		return render_template('sourceSelector.html', session=session)
 
@@ -43,16 +38,29 @@ def sourceSelector():
 def user(name):
 	return render_template('hello.html', name=name)
 
-@app.route('/feedlist')
-def shortlist():
-	list_id="123"
+@app.route('/feedlist', methods=['GET', 'POST'])
+def feedlist():
+	list_id = "123"
+	# Get The Article Feed Object As list
 	chosenfeed = eval(str(session['source'])+ "_feed")
 	index_article_list = chosenfeed.articlesTitleLinkList()
-	return render_template('feedlist.html', list_id=list_id, index_article_list=index_article_list)
+	# Handle the checkboxes array
+	if request.method == "POST":
+		if request.form.getlist("checkboxes"):
+			session['shortlistitems'] = request.form.getlist("checkboxes")
+			print "lllllllllllllll"
+		return redirect(url_for('shortlist'))
+	else:
+		print "2222222"
+		return render_template('feedlist.html', list_id=list_id, index_article_list=index_article_list, session=session)
 
 @app.route('/joke/<jokename>')
 def joke(jokename):
 	return render_template('joke.html', jokename=jokename)
+
+@app.route('/shortlist')
+def shortlist():
+	return render_template('shortlist.html')
 
 @app.route('/form')
 def form():
