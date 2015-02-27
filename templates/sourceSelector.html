@@ -1,0 +1,28 @@
+<a href="{{ url_for('sourceSelector') }}"><button>Home</button></a>
+<a href="{{ url_for('form') }}"><button>Form</button></a>
+
+
+<div id="content">
+            {% if session['name'] %}
+            Your name seems to be <strong>{{session['name']}}</strong>.<br/>
+            {%else%}
+            Your Name could be dave
+            {%endif%}
+
+
+    
+</div>
+
+            <div class="title">
+                <h1>Store your article Source into a session variable</h1>
+            </div>
+
+<h2> Hi {{name}}, Please Pick Source for your Articles Todaytesttest</h2>
+<div>
+	<form method="get" action="{{ url_for('sourceSelector') }}">
+
+	 <input type="image" src="/images/fox.png" value='fox' name="articleSource"  />
+	 <input type="image" src="/images/bbc.png" value='bbc' name="articleSource"  />
+	 <input type="image" src="/images/dailymail.png" value='dailymail' name="articleSource"  />
+	</form>
+</div>

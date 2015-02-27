@@ -3,7 +3,10 @@
 # url_for to extract the url for a given view/route
 # request to access the GET data request for the form view
 # redirect to perform redirects to different routes
+import sys
+sys.path.append('/disk1/playpen/dev/joke_assistant/')
 from flask import Flask, session, render_template, url_for, request, redirect
+from  JA_Classes import ArticleFeed, ArticleShortList, Draft, Joke
 
 app = Flask("__name__",  static_folder = "images")
 print app
@@ -17,19 +20,35 @@ app.secret_key = 'F12Zr47j\3yX R~X@H!jmM]Lwf/,?KT'
 #     session['counter'] = 1
 
 
+# @app.route('/')
+# def index():
+# 	name = "fred"
+# 	return render_template('index.html', name=name)
+
+bbc_feed = ArticleFeed('bbc', "bbc.png", 'http://feeds.bbci.co.uk/news/rss.xml?edition=uk')
+dailymail_feed = ArticleFeed('dailymail', "dailymail.jpeg", 'http://www.dailymail.co.uk/news/index.rss')
+fox_feed = ArticleFeed('fox', "fox.png", 'http://feeds.foxnews.com/foxnews/latest')
+
 @app.route('/')
-def index():
-	name = "fred"
-	return render_template('index.html', name=name)
+def sourceSelector():
+ 	name = "fred"
+ 	if request.args.get('articleSource'):
+ 		session['source'] = request.args.get('articleSource')
+ 		return redirect(url_for('shortlist'))
+ 	else:
+ 		return render_template('sourceSelector.html', session=session)
+
 
 @app.route('/user/<name>')
 def user(name):
 	return render_template('hello.html', name=name)
 
-@app.route('/shortlist')
+@app.route('/feedlist')
 def shortlist():
 	list_id="123"
-	return render_template('shortlist.html', list_id=list_id)
+	chosenfeed = eval(str(session['source'])+ "_feed")
+	index_article_list = chosenfeed.articlesTitleLinkList()
+	return render_template('feedlist.html', list_id=list_id, index_article_list=index_article_list)
 
 @app.route('/joke/<jokename>')
 def joke(jokename):
@@ -42,7 +61,7 @@ def form():
   if request.args.get('yourname'):
     session['name'] = request.args.get('yourname')
     # And then redirect the user to the main page
-    return redirect(url_for('index'))
+    return redirect(url_for('sourceSelector'))
   else:
     # If no name has been sent, show the form
     return render_template('form.html', session=session)
