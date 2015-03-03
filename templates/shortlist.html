@@ -10,9 +10,21 @@
             You session is not working yet.
             {% endif %}
 
+            <h1> short list </h1>
+         
             {{session['shortlistitems']}}
+               <form action="" method=post>
+      			{% set id = 1 %}
 
-<h1> short list </h1>
+      		{% for key in session['shortlistitems'] %}
+                   {% print key %}<br>
+ 	         <!-- <a href="{% print key[3] %}"></a><br> -->
+      		{% endfor %}
+        <input type="submit" value="Submit">
+
+      </form>
+
+
          
 
 <div>
