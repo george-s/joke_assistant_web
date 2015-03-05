@@ -28,13 +28,23 @@ def CleanUpCheckBoxList(checkboxlist):
  		line = re.sub("u'", "", line)
  		line = re.sub('u"', '', line)
  		line = re.sub("'", "", line)
+ 		line = re.sub('"', '', line)
  		print line
  		# don't need dictionary necessarily
  		cleanlist.append(line)
 	return cleanlist
 
+def split_comma1(string):
+	dave = string.split(",")[0]
+	return dave
+
+def split_comma2(string):
+	barry = string.split(",")[1]
+	return barry
 
 
+app.jinja_env.filters['split_comma1'] = split_comma1
+app.jinja_env.filters['split_comma2'] = split_comma2
 @app.route('/')
 def sourceSelector():
  	name = "fred"
@@ -65,7 +75,8 @@ def feedlist():
 	
 	if request.method == "POST":
 		if request.form.getlist("checkboxes"):
-			session['shortlistitems'] = request.form.getlist("checkboxes")
+			cleanlist = CleanUpCheckBoxList(request.form.getlist("checkboxes"))
+			session['shortlistitems'] = cleanlist
 		return redirect(url_for('shortlist'))
 	else:
 		return render_template('feedlist.html', index_article_list=index_article_list, session=session)
@@ -74,7 +85,6 @@ def feedlist():
 
 @app.route('/shortlist')
 def shortlist():
-	CleanUpCheckBoxList(session['shortlistitems'])
 	return render_template('shortlist.html')
 
 # if a name has been sent, store it in a session variable

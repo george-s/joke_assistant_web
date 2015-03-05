@@ -12,13 +12,13 @@
 
             <h1> short list </h1>
          
-            {{session['shortlistitems']}}
+            <!-- {{session['shortlistitems']}} -->
                <form action="" method=post>
       			{% set id = 1 %}
 
       		{% for key in session['shortlistitems'] %}
-                   {% print key %}<br>
- 	         <!-- <a href="{% print key[3] %}"></a><br> -->
+                   
+ 	         <a href="{% print key|split_comma1 %}">{% print key|split_comma2 %}</a><br>
       		{% endfor %}
         <input type="submit" value="Submit">
 
