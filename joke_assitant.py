@@ -21,6 +21,9 @@ bbc_feed = ArticleFeed('bbc', "bbc.png", 'http://feeds.bbci.co.uk/news/rss.xml?e
 dailymail_feed = ArticleFeed('dailymail', "dailymail.jpeg", 'http://www.dailymail.co.uk/news/index.rss')
 fox_feed = ArticleFeed('fox', "fox.png", 'http://feeds.foxnews.com/foxnews/latest')
 
+
+
+
 def CleanUpCheckBoxList(checkboxlist):
 	cleanlist=[]
 	for line in checkboxlist:
@@ -34,6 +37,28 @@ def CleanUpCheckBoxList(checkboxlist):
  		cleanlist.append(line)
 	return cleanlist
 
+def CheckBoxListToDictList(checkboxlist):
+	cleanlist=[]
+	for line in checkboxlist:
+ 		line = re.sub('[()]', '', line)
+ 		line = re.sub("u'", "", line)
+ 		line = re.sub('u"', '', line)
+ 		line = re.sub("'", "", line)
+ 		line = re.sub('"', '', line)
+ 		dave = line.split(",")[0]
+ 		barry = line.split(",")[1]
+ 		print "dave " + dave
+ 		print "barry " + barry
+ 		
+ 		dicti = {dave.encode('utf8') : barry.encode('utf8')}
+
+ 		print line
+ 		print dicti
+ 		# don't need dictionary necessarily
+ 		cleanlist.append(dicti)
+	return cleanlist
+
+
 def split_comma1(string):
 	dave = string.split(",")[0]
 	return dave
@@ -42,9 +67,15 @@ def split_comma2(string):
 	barry = string.split(",")[1]
 	return barry
 
+def deDictUni(something):
+	something = str(something).strip('[]').strip("'").strip("u'")
+	return something
+
 
 app.jinja_env.filters['split_comma1'] = split_comma1
 app.jinja_env.filters['split_comma2'] = split_comma2
+app.jinja_env.filters['deDictUni'] = deDictUni
+#app.jinja_env.globals.update(deDict=deDict)
 @app.route('/')
 def sourceSelector():
  	name = "fred"
@@ -75,7 +106,8 @@ def feedlist():
 	
 	if request.method == "POST":
 		if request.form.getlist("checkboxes"):
-			cleanlist = CleanUpCheckBoxList(request.form.getlist("checkboxes"))
+			# cleanlist = CleanUpCheckBoxList(request.form.getlist("checkboxes"))
+			cleanlist = CheckBoxListToDictList(request.form.getlist("checkboxes"))
 			session['shortlistitems'] = cleanlist
 		return redirect(url_for('shortlist'))
 	else:
