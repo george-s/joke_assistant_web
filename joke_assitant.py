@@ -22,8 +22,6 @@ dailymail_feed = ArticleFeed('dailymail', "dailymail.jpeg", 'http://www.dailymai
 fox_feed = ArticleFeed('fox', "fox.png", 'http://feeds.foxnews.com/foxnews/latest')
 
 
-
-
 def CleanUpCheckBoxList(checkboxlist):
 	cleanlist=[]
 	for line in checkboxlist:
@@ -97,7 +95,7 @@ def joke(jokename):
 
 
 
-# Get The Article Feed Object As list Handle the checkboxes array as list
+# Get The Article Feed Object As list Handle the checkboxes array as list of Dicts
 @app.route('/feedlist', methods=['GET', 'POST'])
 def feedlist():
 	
@@ -106,9 +104,8 @@ def feedlist():
 	
 	if request.method == "POST":
 		if request.form.getlist("checkboxes"):
-			# cleanlist = CleanUpCheckBoxList(request.form.getlist("checkboxes"))
 			cleanlist = CheckBoxListToDictList(request.form.getlist("checkboxes"))
-			session['shortlistitems'] = cleanlist
+			session['shortlistitems'] += cleanlist
 		return redirect(url_for('shortlist'))
 	else:
 		return render_template('feedlist.html', index_article_list=index_article_list, session=session)
