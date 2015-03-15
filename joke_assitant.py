@@ -93,7 +93,10 @@ def user(name):
 def joke(jokename):
 	return render_template('joke.html', jokename=jokename)
 
-
+@app.route('/clear')
+def clear():
+	session.clear()
+	return redirect(url_for('sourceSelector'))
 
 # Get The Article Feed Object As list Handle the checkboxes array as list of Dicts
 @app.route('/feedlist', methods=['GET', 'POST'])
@@ -104,8 +107,16 @@ def feedlist():
 	
 	if request.method == "POST":
 		if request.form.getlist("checkboxes"):
-			cleanlist = CheckBoxListToDictList(request.form.getlist("checkboxes"))
-			session['shortlistitems'] += cleanlist
+			if not session.get('shortlistitems'):
+				cleanlist = CheckBoxListToDictList(request.form.getlist("checkboxes"))
+				print "bboooooooooooo NO SESSOPMS"
+				session['shortlistitems'] = cleanlist
+			else:
+				cleanlist = CheckBoxListToDictList(request.form.getlist("checkboxes"))
+				session['shortlistitems'] += cleanlist
+				print "woooo Sessions exist"
+			# Need to us += to add clean list if session does not exist 
+			
 		return redirect(url_for('shortlist'))
 	else:
 		return render_template('feedlist.html', index_article_list=index_article_list, session=session)
