@@ -22,18 +22,6 @@ dailymail_feed = ArticleFeed('dailymail', "dailymail.jpeg", 'http://www.dailymai
 fox_feed = ArticleFeed('fox', "fox.png", 'http://feeds.foxnews.com/foxnews/latest')
 
 
-def CleanUpCheckBoxList(checkboxlist):
-	cleanlist=[]
-	for line in checkboxlist:
- 		line = re.sub('[()]', '', line)
- 		line = re.sub("u'", "", line)
- 		line = re.sub('u"', '', line)
- 		line = re.sub("'", "", line)
- 		line = re.sub('"', '', line)
- 		print line
- 		# don't need dictionary necessarily
- 		cleanlist.append(line)
-	return cleanlist
 
 def CheckBoxListToDictList(checkboxlist):
 	cleanlist=[]
@@ -55,6 +43,21 @@ def CheckBoxListToDictList(checkboxlist):
  		# don't need dictionary necessarily
  		cleanlist.append(dicti)
 	return cleanlist
+
+
+def collectOnlyNew(master, new):
+	additions = []
+	for a in new:
+		if a not in master:
+			additions.append(a)
+			master.append(a)
+		if len(additions) > 0:
+			for i in additions:
+				print str(i.values()) + " added to shortlist"
+		else:
+			print "no new items to add"
+	return master
+
 
 
 def split_comma1(string):
@@ -109,14 +112,14 @@ def feedlist():
 		if request.form.getlist("checkboxes"):
 			if not session.get('shortlistitems'):
 				cleanlist = CheckBoxListToDictList(request.form.getlist("checkboxes"))
-				print "bboooooooooooo NO SESSOPMS"
+				print "No Session - starting fresh on"
 				session['shortlistitems'] = cleanlist
 			else:
 				cleanlist = CheckBoxListToDictList(request.form.getlist("checkboxes"))
-				session['shortlistitems'] += cleanlist
+				#session['shortlistitems'] += cleanlist
+				session['shortlistitems'] = collectOnlyNew(session['shortlistitems'], cleanlist)
 				print "woooo Sessions exist"
-			# Need to us += to add clean list if session does not exist 
-			
+				# Need to us += to add clean list if session does not exist 
 		return redirect(url_for('shortlist'))
 	else:
 		return render_template('feedlist.html', index_article_list=index_article_list, session=session)
