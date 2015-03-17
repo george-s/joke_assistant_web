@@ -1,6 +1,6 @@
 
 
-<a href={{ url_for('sourceSelector') }}><button>Home</button></a>
+<a href={{ url_for('sourceSelector') }}><button>Feed Selector</button></a>
 
 <div id="content">
             {% if session['source'] %}
@@ -17,10 +17,10 @@
       			{% set id = 1 %}
 
       		{% for key in session['shortlistitems'] %}
-
-          <a href="{{ key.keys()|deDictUni() }}">{{key.values()|deDictUni()}}</a><br>
-      		{% endfor %}
-        <input type="submit" value="Submit">
+          <a target="myIframe" href="{{ key.keys()|deDictUni() }}" onclick="setIframeSrc('myIframe', this.href); return false">{{key.values()|deDictUni()}}</a><br>
+          {% endfor %}
+        <input type="submit" value="Joke Writer">
+        <iframe width=95% height=300 name="myIframe"> ddkdk</iframe>
 
       </form>
 

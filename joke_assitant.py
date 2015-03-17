@@ -63,7 +63,6 @@ def deDictUni(something):
 
 
 app.jinja_env.filters['deDictUni'] = deDictUni
-#app.jinja_env.globals.update(deDict=deDict)
 @app.route('/')
 def sourceSelector():
  	name = "fred"
@@ -85,7 +84,8 @@ def joke(jokename):
 
 @app.route('/clear')
 def clear():
-	session.clear()
+	#session.clear()
+	session['shortlistitems'] = []
 	return redirect(url_for('sourceSelector'))
 
 # Get The Article Feed Object As list Handle the checkboxes array as list of Dicts
@@ -110,7 +110,6 @@ def feedlist():
 		return render_template('feedlist.html', index_article_list=index_article_list, session=session)
 
 
-
 @app.route('/shortlist')
 def shortlist():
 	return render_template('shortlist.html')
@@ -127,6 +126,7 @@ def name_form():
     return redirect(url_for('sourceSelector'))
   else:
     return render_template('name_form.html', session=session)
+
 
 
 
