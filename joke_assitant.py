@@ -35,12 +35,9 @@ def CheckBoxListToDictList(checkboxlist):
  		barry = line.split(",")[1]
  		print "dave " + dave
  		print "barry " + barry
- 		
  		dicti = {dave.encode('utf8') : barry.encode('utf8')}
-
  		print line
  		print dicti
- 		# don't need dictionary necessarily
  		cleanlist.append(dicti)
 	return cleanlist
 
@@ -60,21 +57,11 @@ def collectOnlyNew(master, new):
 
 
 
-def split_comma1(string):
-	dave = string.split(",")[0]
-	return dave
-
-def split_comma2(string):
-	barry = string.split(",")[1]
-	return barry
-
 def deDictUni(something):
 	something = str(something).strip('[]').strip("'").strip("u'")
 	return something
 
 
-app.jinja_env.filters['split_comma1'] = split_comma1
-app.jinja_env.filters['split_comma2'] = split_comma2
 app.jinja_env.filters['deDictUni'] = deDictUni
 #app.jinja_env.globals.update(deDict=deDict)
 @app.route('/')
@@ -116,10 +103,8 @@ def feedlist():
 				session['shortlistitems'] = cleanlist
 			else:
 				cleanlist = CheckBoxListToDictList(request.form.getlist("checkboxes"))
-				#session['shortlistitems'] += cleanlist
-				session['shortlistitems'] = collectOnlyNew(session['shortlistitems'], cleanlist)
+				session['shortlistitems'] = collectOnlyNew(session['shortlistitems'], cleanlist) 
 				print "woooo Sessions exist"
-				# Need to us += to add clean list if session does not exist 
 		return redirect(url_for('shortlist'))
 	else:
 		return render_template('feedlist.html', index_article_list=index_article_list, session=session)
